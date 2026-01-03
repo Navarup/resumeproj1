@@ -29,10 +29,13 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
 
   }
 
-  service_principal  {
-    client_id = var.client_id
-    client_secret = var.client_secret
-  }
+service_principal {
+  # Use SP only if client_id & client_secret provided
+  count = length(var.client_id) > 0 ? 1 : 0
+
+  client_id     = var.client_id
+  client_secret = var.client_secret
+}
 
 # to do: generate the ssh keys using tls_private_key
 # upload the key to key vault
